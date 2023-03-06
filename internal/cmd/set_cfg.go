@@ -6,7 +6,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/ahatojli4/grafana-helper/internal/entities"
+	"github.com/ahatojli4/ghelper/internal/entities"
 )
 
 func SetCfg() (*entities.Config, error) {

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/ahatojli4/grafana-helper/internal/grafana_client/entities"
+	"github.com/ahatojli4/ghelper/internal/grafana_client/entities"
 )
 
 type Client struct {
