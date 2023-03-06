@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"sync"
 
-	entities2 "github.com/ahatojli4/ghelper/internal/entities"
-	"github.com/ahatojli4/ghelper/internal/grafana_client"
-	"github.com/ahatojli4/ghelper/internal/grafana_client/entities"
+	entities2 "github.com/ahatojli4/grafana-helper/internal/entities"
+	"github.com/ahatojli4/grafana-helper/internal/grafana_client"
+	"github.com/ahatojli4/grafana-helper/internal/grafana_client/entities"
 )
 
 type search struct {

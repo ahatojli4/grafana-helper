@@ -1,4 +1,4 @@
-module github.com/ahatojli4/ghelper
+module github.com/ahatojli4/grafana-helper
 
 go 1.20
 

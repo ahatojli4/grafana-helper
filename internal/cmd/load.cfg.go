@@ -8,7 +8,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/ahatojli4/ghelper/internal/entities"
+	"github.com/ahatojli4/grafana-helper/internal/entities"
 )
 
 func LoadConfig() *entities.Config {

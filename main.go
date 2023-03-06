@@ -9,10 +9,10 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/ahatojli4/ghelper/internal/cmd"
-	entities2 "github.com/ahatojli4/ghelper/internal/entities"
-	"github.com/ahatojli4/ghelper/internal/grafana_client"
-	"github.com/ahatojli4/ghelper/internal/search"
+	"github.com/ahatojli4/grafana-helper/internal/cmd"
+	entities2 "github.com/ahatojli4/grafana-helper/internal/entities"
+	"github.com/ahatojli4/grafana-helper/internal/grafana_client"
+	"github.com/ahatojli4/grafana-helper/internal/search"
 )
 
 func main() {
