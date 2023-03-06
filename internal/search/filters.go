@@ -1,8 +1,9 @@
 package search
 
 import (
-	"grafana-helper/internal/grafana_client/entities"
 	"strings"
+
+	"github.com/ahatojli4/grafana-helper/internal/grafana_client/entities"
 )
 
 func checkPanelDatasource(p *entities.Panel) bool {

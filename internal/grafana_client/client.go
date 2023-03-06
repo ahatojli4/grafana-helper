@@ -2,10 +2,11 @@ package grafana_client
 
 import (
 	"encoding/json"
-	"grafana-helper/internal/grafana_client/entities"
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/ahatojli4/grafana-helper/internal/grafana_client/entities"
 )
 
 type Client struct {

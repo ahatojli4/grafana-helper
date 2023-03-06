@@ -3,9 +3,10 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"grafana-helper/internal/entities"
 	"os"
 	"path"
+
+	"github.com/ahatojli4/grafana-helper/internal/entities"
 )
 
 func SetCfg() (*entities.Config, error) {

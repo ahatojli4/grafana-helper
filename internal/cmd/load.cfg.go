@@ -4,10 +4,11 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"grafana-helper/internal/entities"
 	"io"
 	"os"
 	"path"
+
+	"github.com/ahatojli4/grafana-helper/internal/entities"
 )
 
 func LoadConfig() *entities.Config {

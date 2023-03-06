@@ -3,15 +3,16 @@ package main
 import (
 	"flag"
 	"fmt"
-	"grafana-helper/internal/cmd"
-	entities2 "grafana-helper/internal/entities"
-	"grafana-helper/internal/grafana_client"
-	"grafana-helper/internal/search"
 	"net/url"
 	"os"
 	"runtime"
 	"strings"
 	"text/tabwriter"
+
+	"github.com/ahatojli4/grafana-helper/internal/cmd"
+	entities2 "github.com/ahatojli4/grafana-helper/internal/entities"
+	"github.com/ahatojli4/grafana-helper/internal/grafana_client"
+	"github.com/ahatojli4/grafana-helper/internal/search"
 )
 
 func main() {

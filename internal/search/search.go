@@ -2,10 +2,11 @@ package search
 
 import (
 	"fmt"
-	entities2 "grafana-helper/internal/entities"
-	"grafana-helper/internal/grafana_client"
-	"grafana-helper/internal/grafana_client/entities"
 	"sync"
+
+	entities2 "github.com/ahatojli4/grafana-helper/internal/entities"
+	"github.com/ahatojli4/grafana-helper/internal/grafana_client"
+	"github.com/ahatojli4/grafana-helper/internal/grafana_client/entities"
 )
 
 type search struct {
