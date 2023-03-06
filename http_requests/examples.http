@@ -1,0 +1,18 @@
+GET {{host}}/api/org
+Authorization: Basic {{basicAuth}}
+
+### need to be authorized
+GET {{host}}/api/user/auth-tokens
+Authorization: Basic {{basicAuth}}
+
+### create api key
+GET {{host}}/api/auth/keys
+Authorization: Basic {{basicAuth}}
+
+### all dashboards
+GET {{host}}/api/search/?limit=5000
+Authorization: Basic {{basicAuth}}
+
+### get specific dashboard by uid (Rotator Timings (right))
+GET {{host}}/api/dashboards/uid/000000350
+Authorization: Basic {{basicAuth}}
