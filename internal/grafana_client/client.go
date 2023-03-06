@@ -2,11 +2,9 @@ package grafana_client
 
 import (
 	"encoding/json"
-	"fmt"
 	"grafana-helper/internal/grafana_client/entities"
 	"io"
 	"net/http"
-	"os"
 	"strings"
 )
 
@@ -73,10 +71,6 @@ func (c *Client) DashboardByUid(uid string) (*entities.Dashboard, error) {
 	}
 	result := entities.Dashboard{}
 	err = json.Unmarshal(raw, &result)
-	if err != nil {
-		fmt.Println(string(raw))
-		os.Exit(1)
-	}
 
 	return &result, err
 }
