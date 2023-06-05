@@ -1,3 +1,4 @@
 bin
 .idea
 
+http_requests/http-client.private.env.json

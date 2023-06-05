@@ -10,19 +10,20 @@ import (
 )
 
 type Client struct {
-	host, auth string
-	client     *http.Client
+	host, auth, sessionId string
+	client                *http.Client
 }
 
-func New(host, auth string) *Client {
+func New(host, auth, session string) *Client {
 	if !(strings.HasPrefix(host, "https://") || strings.HasPrefix(host, "http://")) {
 		host = "https://" + host
 	}
 
 	return &Client{
-		host:   host,
-		auth:   auth,
-		client: &http.Client{},
+		host:      host,
+		auth:      auth,
+		sessionId: session,
+		client:    &http.Client{},
 	}
 }
 
@@ -32,7 +33,13 @@ func (c *Client) Search() ([]entities.SearchDashboard, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Add("Authorization", c.auth)
+	//req.Header.Add("Authorization", c.auth)
+	if len(c.sessionId) > 0 {
+		req.AddCookie(&http.Cookie{
+			Name:  "grafana_session",
+			Value: c.sessionId,
+		})
+	}
 
 	resp, err := c.client.Do(req)
 	if err != nil {
@@ -57,7 +64,13 @@ func (c *Client) DashboardByUid(uid string) (*entities.Dashboard, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Add("Authorization", c.auth)
+	//req.Header.Add("Authorization", c.auth)
+	if len(c.sessionId) > 0 {
+		req.AddCookie(&http.Cookie{
+			Name:  "grafana_session",
+			Value: c.sessionId,
+		})
+	}
 
 	resp, err := c.client.Do(req)
 	if err != nil {

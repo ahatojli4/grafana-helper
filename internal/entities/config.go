@@ -22,3 +22,15 @@ type auth struct {
 func (a auth) BasicHeader() string {
 	return fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(a.Username+":"+a.Password)))
 }
+
+type ApiKey string
+
+func (k ApiKey) BearerHeader() string {
+	return fmt.Sprintf("Bearer %s", k)
+}
+
+type Session string
+
+func (s Session) CookieHeader() string {
+	return fmt.Sprintf("Cookie: %s", s)
+}

@@ -12,6 +12,7 @@ import (
 	"github.com/ahatojli4/grafana-helper/internal/cmd"
 	entities2 "github.com/ahatojli4/grafana-helper/internal/entities"
 	"github.com/ahatojli4/grafana-helper/internal/grafana_client"
+	"github.com/ahatojli4/grafana-helper/internal/helper"
 	"github.com/ahatojli4/grafana-helper/internal/search"
 )
 
@@ -37,15 +38,15 @@ func main() {
 		return
 	}
 	cfg := cmd.LoadConfig()
-	client := grafana_client.New(cfg.Grafana.Host, cfg.Grafana.Auth.BasicHeader())
+	client := grafana_client.New(cfg.Grafana.Host, cfg.Grafana.Auth.BasicHeader(), "")
 	s := search.New(client)
 	resCh := make(chan *entities2.ResultDashboard, 10)
 	go s.Find(os.Args[1:][0], resCh)
 	w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
 	_, _ = fmt.Fprintf(w, "Title\tUrl\tIn Dashboard Vars\tPanels\n")
 	for r := range resCh {
-		uniquePanelNames := uniq(convertPanelsTo(r.Panels))
-		uniqueVariables := uniq(convertVariablesTo(r.Variables))
+		uniquePanelNames := helper.Uniq(helper.ConvertPanelsTo(r.Panels))
+		uniqueVariables := helper.Uniq(helper.ConvertVariablesTo(r.Variables))
 		u := url.URL{
 			Scheme: "https",
 			Host:   cfg.Grafana.Host,
@@ -56,35 +57,4 @@ func main() {
 	}
 	_, _ = fmt.Fprintf(w, "Done")
 	_ = w.Flush()
-}
-
-func uniq(s []string) []string {
-	m := make(map[string]struct{}, len(s))
-	for _, v := range s {
-		m[v] = struct{}{}
-	}
-	res := make([]string, 0, len(m))
-	for k := range m {
-		res = append(res, k)
-	}
-
-	return res
-}
-
-func convertPanelsTo(tt []entities2.ResultPanel) []string {
-	rr := make([]string, 0, len(tt))
-	for _, t := range tt {
-		rr = append(rr, t.Title)
-	}
-
-	return rr
-}
-
-func convertVariablesTo(tt []entities2.ResultVariable) []string {
-	rr := make([]string, 0, len(tt))
-	for _, t := range tt {
-		rr = append(rr, t.Title)
-	}
-
-	return rr
 }

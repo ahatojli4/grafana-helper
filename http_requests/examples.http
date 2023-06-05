@@ -1,6 +1,10 @@
 GET {{host}}/api/org
 Authorization: Basic {{basicAuth}}
 
+###
+GET {{host}}/api/org
+Cookie: grafana_session=7e6726ddb14a7abbc04e9e90372f2fee
+
 ### need to be authorized
 GET {{host}}/api/user/auth-tokens
 Authorization: Basic {{basicAuth}}
@@ -16,3 +20,57 @@ Authorization: Basic {{basicAuth}}
 ### get specific dashboard by uid (Rotator Timings (right))
 GET {{host}}/api/dashboards/uid/000000350
 Authorization: Basic {{basicAuth}}
+
+### get specific dashboard by uid (Rotator Timings (right))
+GET {{host}}/api/dashboards/uid/VCOY4Y-4z
+Authorization: Basic {{basicAuth}}
+
+### get dashboard versions by uid
+GET {{host}}/api/dashboards/id/1171/versions
+Authorization: Basic {{basicAuth}}
+
+### get dashboard version by uid
+GET {{host}}/api/dashboards/id/1171/versions/56
+Authorization: Basic {{basicAuth}}
+
+### Compare dashboard versions
+POST {{host}}/api/dashboards/calculate-diff
+Authorization: Basic {{basicAuth}}
+Content-Type: application/json
+
+{
+  "base": {
+    "dashboardId": 1171,
+    "version": 56
+  },
+  "new": {
+    "dashboardId": 1171,
+    "version": 55
+  },
+  "diffType": "json"
+}
+
+### Restore dashboard
+POST {{host}}/api/dashboards/id/1171/restore
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{apiKeyAuth}}
+
+{
+  "version": 54
+}
+
+
+### get dashboard version by uid
+GET {{host}}/api/dashboards/id/1171/versions/55
+Authorization: Bearer {{apiKeyAuth}}
+
+### Restore dashboard
+POST https://{{host}}/api/dashboards/uid/VCOY4Y-4z/restore
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{apiKeyAuth}}
+
+{
+  "version": 53
+}
