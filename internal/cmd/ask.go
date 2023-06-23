@@ -29,6 +29,8 @@ func askHost() string {
 		panic(fmt.Errorf("an error occured while reading host. Error: %s", err))
 	}
 	host = strings.TrimSuffix(host, "\n")
+	host = strings.TrimPrefix(host, "http://")
+	host = strings.TrimPrefix(host, "https://")
 
 	return host
 }

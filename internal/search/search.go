@@ -49,7 +49,7 @@ func (s *search) Find(metric string, result chan<- *entities2.ResultDashboard) {
 	for _, sd := range s.searchDashboards {
 		s.inflightRequests <- struct{}{}
 		wg.Add(1)
-		go func(sd *entities.SearchDashboard) {
+		go func(sd entities.SearchDashboard) {
 			defer wg.Done()
 			defer func() {
 				<-s.inflightRequests
@@ -60,10 +60,10 @@ func (s *search) Find(metric string, result chan<- *entities2.ResultDashboard) {
 				return
 			}
 			s.findChannel <- &combinedResponse{
-				sd: sd,
+				sd: &sd,
 				d:  d,
 			}
-		}(&sd)
+		}(sd)
 	}
 	wg.Wait()
 	close(s.findChannel)

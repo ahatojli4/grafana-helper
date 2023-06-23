@@ -7,8 +7,11 @@ import (
 	"os"
 	"runtime"
 	"strings"
+	"sync"
 	"text/tabwriter"
+	"time"
 
+	"github.com/ahatojli4/grafana-helper/internal/cache"
 	"github.com/ahatojli4/grafana-helper/internal/cmd"
 	entities2 "github.com/ahatojli4/grafana-helper/internal/entities"
 	"github.com/ahatojli4/grafana-helper/internal/grafana_client"
@@ -38,10 +41,19 @@ func main() {
 		return
 	}
 	cfg := cmd.LoadConfig()
-	client := grafana_client.New(cfg.Grafana.Host, cfg.Grafana.Auth.BasicHeader(), "")
+	c := cache.New(30 * time.Minute)
+	c.Load()
+	client := grafana_client.New(cfg.Grafana.Host, cfg.Grafana.Auth.BasicHeader(), c)
 	s := search.New(client)
 	resCh := make(chan *entities2.ResultDashboard, 10)
-	go s.Find(os.Args[1:][0], resCh)
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+
+		s.Find(os.Args[1:][0], resCh)
+		c.Store()
+	}()
 	w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
 	_, _ = fmt.Fprintf(w, "Title\tUrl\tIn Dashboard Vars\tPanels\n")
 	for r := range resCh {
@@ -55,6 +67,8 @@ func main() {
 
 		_, _ = fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", r.Title, u.String(), strings.Join(uniqueVariables, ", "), strings.Join(uniquePanelNames, ", "))
 	}
+	wg.Wait()
+
 	_, _ = fmt.Fprintf(w, "Done")
 	_ = w.Flush()
 }
