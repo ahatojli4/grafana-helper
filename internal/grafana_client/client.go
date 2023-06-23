@@ -37,7 +37,7 @@ func (c *Client) Search() ([]entities.SearchDashboard, error) {
 	}).String()
 	var raw []byte
 	raw, ok := c.cache.Get(u)
-	if !ok {
+	if !ok || c.cache.IsExpired() {
 		req, err := http.NewRequest("GET", u, nil)
 		if err != nil {
 			return nil, err
@@ -72,7 +72,7 @@ func (c *Client) DashboardByUid(uid string) (*entities.Dashboard, error) {
 	}).String()
 	var raw []byte
 	raw, ok := c.cache.Get(u)
-	if !ok {
+	if !ok || c.cache.IsExpired() {
 		req, err := http.NewRequest("GET", u, nil)
 		if err != nil {
 			return nil, err

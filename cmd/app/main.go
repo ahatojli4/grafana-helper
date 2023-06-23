@@ -1,15 +1,18 @@
 package main
 
 import (
+	"embed"
 	"encoding/json"
 	"flag"
-	"fmt"
+	"io/fs"
 	"log"
 	"net/http"
 	"net/url"
-	"os"
 	"strings"
+	"sync"
+	"time"
 
+	"github.com/ahatojli4/grafana-helper/internal/cache"
 	"github.com/ahatojli4/grafana-helper/internal/entities"
 	"github.com/ahatojli4/grafana-helper/internal/grafana_client"
 	"github.com/ahatojli4/grafana-helper/internal/helper"
@@ -17,37 +20,36 @@ import (
 )
 
 var (
-	apiKey      = flag.String("api-key", "eyJrIjoidW1MNVNtUXRyVVNRRUZSN0pyc1V6ZHEzMFF5clV0NGsiLCJuIjoiZC5ib3Jpc2V2aWNodXMiLCJpZCI6MX0=", "grafana api key")
-	session     = flag.String("session", "7e6726ddb14a7abbc04e9e90372f2fee", "grafana session")
+	apiKey      = flag.String("api-key", "", "grafana api key")
 	grafanaHost = flag.String("grafana-host", "grafana.rtty.in", "grafana host")
-	port        = flag.String("port", "4141", "port")
+	port        = flag.String("port", "4142", "port")
 )
+
+//go:embed frontend/*
+var content embed.FS
 
 func main() {
 	flag.Parse()
 
+	c := cache.New(30 * time.Minute)
 	srv := &Server{
-		grafanaClient: grafana_client.New(
-			*grafanaHost,
-			entities.ApiKey(*apiKey).BearerHeader(),
-			*session,
-		),
-		srv: &http.Server{},
+		grafanaClient: grafana_client.New(*grafanaHost, entities.ApiKey(*apiKey).BearerHeader(), c),
+		srv:           &http.Server{},
 	}
 
-	dir, err := os.ReadDir("./frontend/build/")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	for i, entry := range dir {
-		fmt.Println(i, entry.Name())
-	}
 	http.Handle("/search", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		m := r.URL.Query().Get("metric")
 		w.Header().Set("Content-Type", "application/json")
 		resCh := make(chan *entities.ResultDashboard, 10)
-		go search.New(srv.grafanaClient).Find(m, resCh)
+		wg := sync.WaitGroup{}
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			search.New(srv.grafanaClient).Find(m, resCh)
+			if c.IsExpired() {
+				c.Reset()
+			}
+		}()
 		type result struct {
 			Title  string `json:"title"`
 			Url    string `json:"url"`
@@ -73,13 +75,16 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+		wg.Wait()
 		_, _ = w.Write(b)
-		w.WriteHeader(http.StatusOK)
 	}))
-	http.Handle("/", http.FileServer(http.Dir("./frontend/build"))) // todo: embed frontend
-	log.Fatal(http.ListenAndServe(":"+*port, nil))
 
-	fmt.Println(srv)
+	frontend, err := fs.Sub(content, "frontend")
+	if err != nil {
+		return
+	}
+	http.Handle("/", http.FileServer(http.FS(frontend)))
+	log.Fatal(http.ListenAndServe(":"+*port, nil))
 }
 
 type Server struct {

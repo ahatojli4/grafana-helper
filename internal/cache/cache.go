@@ -36,7 +36,8 @@ func New(ttl time.Duration) *Cache {
 func (c *Cache) Load() {
 	fileStat, _ := os.Stat(c.path)
 	isCacheFileExist := fileStat != nil
-	if isCacheFileExist && time.Since(fileStat.ModTime()) < c.ttl {
+	c.lastLoadTime = fileStat.ModTime()
+	if isCacheFileExist && !c.IsExpired() {
 		file, err := os.OpenFile(c.path, os.O_RDWR, 0755)
 		if err != nil {
 			panic(fmt.Errorf("can't file file: %s", err))
@@ -89,4 +90,12 @@ func (c *Cache) Set(key string, value []byte) {
 	defer c.accessFlag.Unlock()
 
 	c.data[key] = value
+}
+
+func (c *Cache) Reset() {
+	c.lastLoadTime = time.Now()
+}
+
+func (c *Cache) IsExpired() bool {
+	return time.Since(c.lastLoadTime) > c.ttl
 }
