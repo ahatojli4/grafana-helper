@@ -48,12 +48,13 @@
     <div class="container">
         <div class="level">
             <h1 class="level-item title has-text-centered">
-                <GrafanaLogo/>
-                Grafana metrics search
+                <span class="mr-2"><GrafanaLogo/></span>
+                <span>Grafana metrics search</span>
+                <span></span>
             </h1>
         </div>
         <form class="">
-            <div class="level">
+            <div class="level tile">
                 <div class="level-item tile is-10 control has-icons-right">
                     <input class="input is-rounded is-large"
                            type="text"
@@ -65,7 +66,7 @@
                         <button class="delete" on:click={clearInput}></button>
                     </span>
                 </div>
-                <div class="level-item tile is-2">
+                <div class="level-item is-2">
                     <button type="submit" class="button is-primary is-rounded is-large {isLoading && 'is-loading'}"
                             on:click={search} tabindex="0">Search
                     </button>
