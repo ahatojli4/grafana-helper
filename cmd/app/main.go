@@ -21,7 +21,7 @@ import (
 
 var (
 	apiKey      = flag.String("api-key", "", "grafana api key")
-	grafanaHost = flag.String("grafana-host", "grafana.rtty.in", "grafana host")
+	grafanaHost = flag.String("grafana-host", "localhost", "grafana host")
 	port        = flag.String("port", "4142", "port")
 )
 
